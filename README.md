@@ -28,7 +28,7 @@ Quelque soit la façon dont vous allez gérer cette partie, on doit pouvoir cons
 
 ### Rejouer
 
-Quand le joueur a capturé tous les pokemons, il peut rejouer une nouvelle partie s'il le souhaite. Rejouver va :
+Quand le joueur a capturé tous les pokemons, il peut rejouer une nouvelle partie s'il le souhaite. Rejouer va :
 
 - Réinitialiser le nombre de coups pour finir la partie (pas le record).
 - Remettre tous les buissons visibles.
@@ -61,7 +61,7 @@ En utilisant l'api [`localStorage`](https://developer.mozilla.org/fr/docs/Web/AP
 
 ### Fonctionnalité avancée : Grille dynamique de jeu en fonction du nombre de pokemons
 
-Nous allons permettre au joueur lorsqu'il soufaite rejouer de permet de choisir le nombre de pokemons dans le jeu.
+Nous allons permettre au joueur lorsqu'il souhaite rejouer de permet de choisir le nombre de pokemons dans le jeu.
 
 Un peu de préparation dans le projet :
 
@@ -95,7 +95,7 @@ Vous observerez dans le formulaire un slider, c'est ce qui déterminera le nombr
 
 ## Grille de notation
 
-Note sur 100 points ramenés à 20.
+Note sur 100 points ramené à 20.
 
 ### Boucle principale du jeu (40 points)
 
