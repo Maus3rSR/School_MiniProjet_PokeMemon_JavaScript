@@ -115,9 +115,20 @@ Note sur 100 points ramené à 20.
 
 ### Propreté du code (nommage, indentation, lisibilité etc.) (5 points)
 
-### Qualité d'architecture (séparation des responsabilités entre le code logique, et le code qui manipule le DOM, encapsulation, etc.) (5 points)
+- Nommage des variables, des fonctions
+- Bonne indentation (formattage)
+- Bonne lisibilité pour quelqu'un qui doit arriver dans votre code pour la première fois
 
-### Bonus pour efforts exceptionnels, innovation, réalisation de fonctionnalités supplémentaires, etc. (selon l'humeur du prof)
+### Qualité d'architecture (5 points)
+
+- Basiques
+  - Utilisation
+  - Utilisation de fonctions
+  - Utilisation d'objets pour stocker et structurer les données
+- Avancées
+  - Encapsulation dans des objets, des classes
+  - Séparation des responsabilités entre le code logique, et le code qui manipule le DOM
+  - Utilisation modulaire avec import/export
 
 ---
 
