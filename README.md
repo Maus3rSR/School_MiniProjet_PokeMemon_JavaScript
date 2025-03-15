@@ -9,6 +9,16 @@ PokeMemon Game est un jeu de mémoire où l'objectif est de trouver les pokemons
 
 ## Fonctionnalités à développer
 
+### Récupération de la liste des pokemons
+
+- Avec `fetch`, récupérez la liste des pokemons de manière asynchrone, l'url sera celui de votre liveserver.
+  - `http://localhost:5500/data/pokemon.json`
+- Vous n'êtes pas obligé de commencer par cette étape et si vous le souhaitez travailler sur les autres fonctionnalités en partant d'une donnée locale dans le fichier `main.js` comme :
+
+```ts
+const pairOfPokemonIds = ["pikachu", "pikachu", "charmander", "charmander"];
+```
+
 ### Boucle principale du jeu
 
 - Le joueur clique sur un buisson.
@@ -22,7 +32,7 @@ PokeMemon Game est un jeu de mémoire où l'objectif est de trouver les pokemons
     - Après quelques secondes, on cache les pokemons et on re-affiche les buissons.
     - Tant que les pokemons ne sont pas cachées, le joueur ne peut pas cliquer sur d'autres buissons.
 
-### Dispositions aléatoires des pokemons
+### Disposition aléatoire des pokemons
 
 Quelque soit la façon dont vous allez gérer cette partie, on doit pouvoir constater que les pokemons ne sont pas toujours au même endroit quand on commence une partie en rechargeant la page ou en cliquant sur le bouton rejouer.
 
