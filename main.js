@@ -71,6 +71,13 @@ function hideBushHTML(index) {
   boxListHTML[index].querySelector(".bush").style.display = "none";
 }
 
+function resetBushHTML(index) {
+  const box = boxListHTML[index];
+  box.querySelector(".bush").style.display = "";
+  box.querySelector(".pokemon")?.remove();
+  box.querySelector(".pokeball")?.remove();
+}
+
 function getPokemonIdFromIndex(index) {
   return gameState.pokemonListInBush[index]?.pokemonId;
 }
@@ -158,8 +165,13 @@ function revealPokemon(event) {
     return;
   }
 
-  // TODO: Reset
-  console.log("RESET");
+  setTimeout(function () {
+    gameState.updatePokemonStateOf(pokemonA.hideInBushIndex, "HIDE");
+    resetBushHTML(pokemonA.hideInBushIndex);
+
+    gameState.updatePokemonStateOf(pokemonB.hideInBushIndex, "HIDE");
+    resetBushHTML(pokemonB.hideInBushIndex);
+  }, 1000);
 }
 
 function startGame() {
