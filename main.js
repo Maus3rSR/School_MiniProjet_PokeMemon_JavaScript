@@ -26,6 +26,7 @@ const boxListHTML = gridHTML.querySelectorAll(".box");
 const catchedPokemonHTML = document.querySelector(".liste_pokemons_captures");
 const countHTML = document.querySelector("#stat_nombre_de_coups");
 const countRecordHTML = document.querySelector("#stat_nombre_de_coups_record");
+const replayButtonHTML = document.querySelector("#rejouer");
 
 const gameState = {
   pokemonListInBush: [
@@ -78,10 +79,22 @@ const gameState = {
       this.stats.countRecord ?? this.stats.count
     );
   },
+  replay() {
+    // TODO: Aléatoire
+    this.stats.count = 0;
+    this.pokemonCatched = [];
+    this.pokemonListInBush.forEach((pokemon) => {
+      pokemon.state = "HIDE";
+    });
+  },
 };
 
 function hideBushHTML(index) {
   boxListHTML[index].querySelector(".bush").style.display = "none";
+}
+
+function resetAllBushHTML() {
+  boxListHTML.forEach((_, index) => resetBushHTML(index));
 }
 
 function resetBushHTML(index) {
@@ -143,6 +156,14 @@ function updateCountRecordHTML(count = 0) {
   countRecordHTML.textContent = count;
 }
 
+function showReplayButton() {
+  replayButtonHTML.style.display = "block";
+}
+
+function hideReplayButton() {
+  replayButtonHTML.style.display = "none";
+}
+
 function revealPokemon(event) {
   const boxHTML = event.currentTarget;
   const indexOfPokemonHidden = Array.from(boxListHTML).indexOf(boxHTML);
@@ -189,10 +210,18 @@ function revealPokemon(event) {
 
   gameState.finishGame();
   updateCountRecordHTML(gameState.stats.countRecord);
+  showReplayButton();
 }
 
 function startGame() {
   boxListHTML.forEach((box) => box.addEventListener("click", revealPokemon));
+  replayButtonHTML.addEventListener("click", () => {
+    gameState.replay();
+    resetAllBushHTML();
+    updateCountHTML(gameState.stats.count);
+    updateCatchedPokemonListHTML(gameState.pokemonCatched);
+    hideReplayButton();
+  });
 }
 
 startGame();
