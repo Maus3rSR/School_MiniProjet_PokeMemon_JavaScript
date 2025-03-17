@@ -25,7 +25,7 @@ const pairOfPokemonIds = ["pikachu", "pikachu", "charmander", "charmander"];
 const gridHTML = document.querySelector("#grille_de_jeu");
 const boxListHTML = gridHTML.querySelectorAll(".box");
 
-function hideBush(index) {
+function hideBushHTML(index) {
   boxListHTML[index].querySelector(".bush").style.display = "none";
 }
 
@@ -41,12 +41,26 @@ function createPokemonHtml({ sprite }) {
   return pokemonHTML;
 }
 
-function revealPokemon(index) {
+function createPokeballHtml() {
+  const pokeballHTML = document.createElement("img");
+  pokeballHTML.src = "./assets/pokeball.png";
+  pokeballHTML.classList.add("pokeball");
+
+  return pokeballHTML;
+}
+
+function revealPokemonHTML(index) {
   const pokemonHTML = createPokemonHtml(
     getPokemonData(pairOfPokemonIds[index])
   );
   boxListHTML[index].appendChild(pokemonHTML);
 }
 
-hideBush(0);
-revealPokemon(0);
+function revealPokeballHTML(index) {
+  const pokeballHTML = createPokeballHtml();
+  boxListHTML[index].appendChild(pokeballHTML);
+}
+
+hideBushHTML(0);
+revealPokemonHTML(0);
+revealPokeballHTML(0);
