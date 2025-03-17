@@ -22,7 +22,6 @@ const gameState = {
       .filter((_, index) => index < this.gridSize / 2)
       .map((pokemon) => pokemon.name);
 
-    console.log(pokemonIds);
     return [...pokemonIds, ...pokemonIds];
   },
   updatePokemonStateOf(index, state) {
