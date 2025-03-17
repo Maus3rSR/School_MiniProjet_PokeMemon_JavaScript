@@ -28,7 +28,7 @@ const countHTML = document.querySelector("#stat_nombre_de_coups");
 const countRecordHTML = document.querySelector("#stat_nombre_de_coups_record");
 
 const gameState = {
-  pokemonListInBox: [
+  pokemonListInBush: [
     {
       pokemonId: "pikachu",
       state: "HIDE", // HIDE, REVEALED, CATCHED
@@ -51,6 +51,14 @@ const gameState = {
     count: 0,
     countRecord: 0,
   },
+  pokemonsRevealedCount() {
+    return this.pokemonsRevealed().length;
+  },
+  pokemonsRevealed() {
+    return this.pokemonListInBush.filter(
+      (pokemon) => pokemon.state === "REVEALED"
+    );
+  },
 };
 
 function hideBushHTML(index) {
@@ -58,7 +66,7 @@ function hideBushHTML(index) {
 }
 
 function getPokemonData(index) {
-  const pokemon_id = gameState.pokemonListInBox[index].pokemonId;
+  const pokemon_id = gameState.pokemonListInBush[index].pokemonId;
   return pokemonData.find((pokemon) => pokemon.name === pokemon_id);
 }
 
@@ -104,9 +112,29 @@ function updateCountRecordHTML(count) {
 function handleBushClick(event) {
   const box = event.currentTarget;
   const index = Array.from(boxListHTML).indexOf(box);
+  const pokemonInBush = gameState.pokemonListInBush[index];
+  const pokemonsRevealedCount = gameState.pokemonsRevealedCount();
+
+  if (pokemonInBush.state !== "HIDE" && pokemonsRevealedCount === 2) return;
 
   hideBushHTML(index);
   revealPokemonHTML(index);
+  pokemonInBush.state = "REVEALED";
+
+  // 0 car au moment où je récupère ce comptage, je n'ai pas changé l'état du pokemon actuel à révélé
+  // on a besoin d'un deuxième pokemon
+  if (pokemonsRevealedCount === 0) return;
+
+  const pokemonRevealed = gameState.pokemonsRevealed();
+
+  if (pokemonRevealed[0].pokemonId === pokemonRevealed[1].pokemonId) {
+    // TODO: Capture
+    console.log("CAPTURE");
+    return;
+  }
+
+  // TODO: Reset
+  console.log("RESET");
 }
 
 function startGame() {
