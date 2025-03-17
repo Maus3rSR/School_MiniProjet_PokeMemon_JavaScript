@@ -71,8 +71,11 @@ function hideBushHTML(index) {
   boxListHTML[index].querySelector(".bush").style.display = "none";
 }
 
-function getPokemonData(index) {
-  const pokemon_id = gameState.pokemonListInBush[index].pokemonId;
+function getPokemonIdFromIndex(index) {
+  return gameState.pokemonListInBush[index]?.pokemonId;
+}
+
+function getPokemonData(pokemon_id) {
   return pokemonData.find((pokemon) => pokemon.name === pokemon_id);
 }
 
@@ -93,7 +96,8 @@ function createPokeballHtml() {
 }
 
 function revealPokemonHTML(index) {
-  const pokemonHTML = createPokemonHtml(getPokemonData(index));
+  const pokemon_id = getPokemonIdFromIndex(index);
+  const pokemonHTML = createPokemonHtml(getPokemonData(pokemon_id));
   boxListHTML[index].appendChild(pokemonHTML);
 }
 
@@ -102,9 +106,13 @@ function revealPokeballHTML(index) {
   boxListHTML[index].appendChild(pokeballHTML);
 }
 
-function catchPokemonHTML(pokemon) {
-  const pokemonHTML = createPokemonHtml(pokemon);
-  catchedPokemonHTML.appendChild(pokemonHTML);
+function updateCatchedPokemonListHTML(pokemonIds) {
+  catchedPokemonHTML.innerHTML = "";
+
+  pokemonIds.forEach((id) => {
+    const pokemonHTML = createPokemonHtml(getPokemonData(id));
+    catchedPokemonHTML.appendChild(pokemonHTML);
+  });
 }
 
 function updateCountHTML(count) {
@@ -143,6 +151,10 @@ function revealPokemon(event) {
 
     gameState.updatePokemonStateOf(pokemonB.hideInBushIndex, "CATCHED");
     revealPokeballHTML(pokemonB.hideInBushIndex);
+
+    gameState.pokemonCatched.push(pokemonA.pokemonId);
+    updateCatchedPokemonListHTML(gameState.pokemonCatched);
+
     return;
   }
 
