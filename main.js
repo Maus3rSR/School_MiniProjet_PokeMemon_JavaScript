@@ -80,7 +80,7 @@ function revealPokemon(positionOfPokemon) {
 }
 
 async function startGame() {
-  gameState.init(await fetchPokemon());
+  await loadGame();
 
   onBoxClicked(function (boxPosition) {
     revealPokemon(boxPosition);
@@ -94,16 +94,14 @@ async function startGame() {
     updateCatchedPokemonListHTML(gameState.getPokemonEntitiesFromCatched());
     hideReplayButton();
   });
-
-  loadGame();
 }
 
-function loadGame() {
-  const savedGameState = retrieveGameState();
-  if (!savedGameState) return;
+async function loadGame() {
+  if (!gameState.load()) {
+    gameState.init(await fetchPokemon());
+    return;
+  }
 
-  console.log(savedGameState);
-  gameState.load(savedGameState);
   gameState.areAllPokemonCatched() && showReplayButton();
   updateAllBushHTML(gameState.getPokemonEntitiesWithState());
   updateCountHTML(gameState.statsCount());

@@ -1,5 +1,5 @@
 import { randomizeArray } from "./random.js";
-import { persistGameState } from "./gameStateStorage.js";
+import { persistGameState, retrieveGameState } from "./gameStateStorage.js";
 
 const gameState = {
   gridSize: 12,
@@ -110,7 +110,10 @@ function init(initialPokemonEntities) {
   }));
 }
 
-function load(state) {
+function load() {
+  const state = retrieveGameState();
+  if (!state) return false;
+
   gameState.pokemonListInBush = state.pokemonListInBush.map((pokemon) => ({
     ...pokemon,
     // Dans une situation où on a quitté la partie avant que les pokemons révélés non identiques
@@ -120,6 +123,8 @@ function load(state) {
 
   gameState.pokemonCatched = state.pokemonCatched;
   gameState.stats = state.stats;
+
+  return true;
 }
 
 export default {
