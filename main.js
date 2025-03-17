@@ -24,12 +24,14 @@ const pokemonData = [
 const pairOfPokemonIds = ["pikachu", "pikachu", "charmander", "charmander"];
 const gridHTML = document.querySelector("#grille_de_jeu");
 const boxListHTML = gridHTML.querySelectorAll(".box");
+const catchedPokemonHTML = document.querySelector(".liste_pokemons_captures");
 
 function hideBushHTML(index) {
   boxListHTML[index].querySelector(".bush").style.display = "none";
 }
 
-function getPokemonData(pokemon_id) {
+function getPokemonData(index) {
+  const pokemon_id = pairOfPokemonIds[index];
   return pokemonData.find((pokemon) => pokemon.name === pokemon_id);
 }
 
@@ -50,9 +52,7 @@ function createPokeballHtml() {
 }
 
 function revealPokemonHTML(index) {
-  const pokemonHTML = createPokemonHtml(
-    getPokemonData(pairOfPokemonIds[index])
-  );
+  const pokemonHTML = createPokemonHtml(getPokemonData(index));
   boxListHTML[index].appendChild(pokemonHTML);
 }
 
@@ -61,6 +61,12 @@ function revealPokeballHTML(index) {
   boxListHTML[index].appendChild(pokeballHTML);
 }
 
+function catchPokemonHTML(pokemon) {
+  const pokemonHTML = createPokemonHtml(pokemon);
+  catchedPokemonHTML.appendChild(pokemonHTML);
+}
+
 hideBushHTML(0);
 revealPokemonHTML(0);
 revealPokeballHTML(0);
+catchPokemonHTML(getPokemonData(0));
