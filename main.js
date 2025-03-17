@@ -5,16 +5,6 @@ const pokemonData = [
       "https://img.pokemondb.net/sprites/scarlet-violet/normal/charmander.png",
   },
   {
-    name: "squirtle",
-    sprite:
-      "https://img.pokemondb.net/sprites/scarlet-violet/normal/squirtle.png",
-  },
-  {
-    name: "bulbasaur",
-    sprite:
-      "https://img.pokemondb.net/sprites/scarlet-violet/normal/bulbasaur.png",
-  },
-  {
     name: "pikachu",
     sprite:
       "https://img.pokemondb.net/sprites/scarlet-violet/normal/pikachu.png",
@@ -29,24 +19,7 @@ const countRecordHTML = document.querySelector("#stat_nombre_de_coups_record");
 const replayButtonHTML = document.querySelector("#rejouer");
 
 const gameState = {
-  pokemonListInBush: [
-    {
-      pokemonId: "pikachu",
-      state: "HIDE", // HIDE, REVEALED, CATCHED
-    },
-    {
-      pokemonId: "pikachu",
-      state: "HIDE",
-    },
-    {
-      pokemonId: "charmander",
-      state: "HIDE",
-    },
-    {
-      pokemonId: "charmander",
-      state: "HIDE",
-    },
-  ],
+  pokemonListInBush: [],
   pokemonCatched: [],
   stats: {
     count: 0,
@@ -80,24 +53,45 @@ const gameState = {
     );
   },
   replay() {
-    // TODO: Aléatoire
     this.stats.count = 0;
     this.pokemonCatched = [];
-    this.pokemonListInBush.forEach((pokemon) => {
-      pokemon.state = "HIDE";
-    });
+    this.pokemonListInBush = this.pokemonListInBush.map((pokemon) => ({
+      ...pokemon,
+      state: "HIDE",
+    }));
+
+    this.randomize();
+  },
+  randomize() {
+    for (let i = this.pokemonListInBush.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.pokemonListInBush[i], this.pokemonListInBush[j]] = [
+        this.pokemonListInBush[j],
+        this.pokemonListInBush[i],
+      ];
+    }
+  },
+  init(pokemonData) {
+    // [...pokemonData, ...pokemonData] permet de prendre la liste et faire un doublon
+    this.pokemonListInBush = [...pokemonData, ...pokemonData].map(
+      (pokemon) => ({
+        pokemonId: pokemon,
+        state: "HIDE",
+      })
+    );
+
+    this.randomize();
   },
   loadState(state) {
-    this.pokemonListInBush =
-      state.pokemonListInBush.map((pokemon) => ({
-        ...pokemon,
-        // Dans une situation où on a quitté la partie avant que les pokemons révélés non identiques
-        // soient cachées, on réinitialise l'état de ces pokemons à HIDE
-        state: pokemon.state === "REVEALED" ? "HIDE" : pokemon.state,
-      })) ?? this.pokemonListInBush;
+    this.pokemonListInBush = state.pokemonListInBush.map((pokemon) => ({
+      ...pokemon,
+      // Dans une situation où on a quitté la partie avant que les pokemons révélés non identiques
+      // soient cachées, on réinitialise l'état de ces pokemons à HIDE
+      state: pokemon.state === "REVEALED" ? "HIDE" : pokemon.state,
+    }));
 
-    this.pokemonCatched = state.pokemonCatched ?? this.pokemonCatched;
-    this.stats = state.stats ?? this.stats;
+    this.pokemonCatched = state.pokemonCatched;
+    this.stats = state.stats;
   },
 };
 
@@ -242,6 +236,7 @@ function revealPokemon(event) {
 }
 
 function startGame() {
+  gameState.init(pokemonData.map((pokemon) => pokemon.name));
   boxListHTML.forEach((box) =>
     box.addEventListener("click", function (event) {
       revealPokemon(event);
@@ -265,12 +260,12 @@ function saveGame() {
 }
 
 function loadGame() {
-  const loadedState = JSON.parse(
-    localStorage.getItem("pokememon_state") ?? "{}"
-  );
-  gameState.loadState(loadedState);
+  const storageValue = localStorage.getItem("pokememon_state");
+  if (!storageValue) return;
 
-  if (gameState.areAllPokemonCatched()) showReplayButton();
+  gameState.loadState(JSON.parse(storageValue));
+
+  gameState.areAllPokemonCatched() && showReplayButton();
   updateAllBushHTML(gameState.pokemonListInBush);
   updateCountHTML(gameState.stats.count);
   updateCountRecordHTML(gameState.stats.countRecord ?? 0);
