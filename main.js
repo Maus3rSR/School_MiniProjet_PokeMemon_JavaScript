@@ -49,7 +49,7 @@ const gameState = {
   pokemonCatched: [],
   stats: {
     count: 0,
-    countRecord: 0,
+    countRecord: null, // null => Le record n'a pas encore été défini
   },
   updatePokemonStateOf(index, state) {
     this.pokemonListInBush[index].state = state;
@@ -67,6 +67,16 @@ const gameState = {
   },
   incrementStat() {
     this.stats.count++;
+  },
+  areAllPokemonCatched() {
+    return this.pokemonCatched.length === this.pokemonListInBush.length / 2;
+  },
+  finishGame() {
+    this.stats.countRecord = Math.min(
+      this.stats.count,
+      // Si record === null, on prend stats.count par défaut
+      this.stats.countRecord ?? this.stats.count
+    );
   },
 };
 
@@ -125,11 +135,11 @@ function updateCatchedPokemonListHTML(pokemonIds) {
   });
 }
 
-function updateCountHTML(count) {
+function updateCountHTML(count = 0) {
   countHTML.textContent = count;
 }
 
-function updateCountRecordHTML(count) {
+function updateCountRecordHTML(count = 0) {
   countRecordHTML.textContent = count;
 }
 
@@ -154,26 +164,31 @@ function revealPokemon(event) {
   gameState.incrementStat();
   updateCountHTML(gameState.stats.count);
 
-  if (pokemonA.pokemonId === pokemonB.pokemonId) {
-    gameState.updatePokemonStateOf(pokemonA.hideInBushIndex, "CATCHED");
-    revealPokeballHTML(pokemonA.hideInBushIndex);
+  if (pokemonA.pokemonId !== pokemonB.pokemonId) {
+    setTimeout(function () {
+      gameState.updatePokemonStateOf(pokemonA.hideInBushIndex, "HIDE");
+      resetBushHTML(pokemonA.hideInBushIndex);
 
-    gameState.updatePokemonStateOf(pokemonB.hideInBushIndex, "CATCHED");
-    revealPokeballHTML(pokemonB.hideInBushIndex);
-
-    gameState.pokemonCatched.push(pokemonA.pokemonId);
-    updateCatchedPokemonListHTML(gameState.pokemonCatched);
+      gameState.updatePokemonStateOf(pokemonB.hideInBushIndex, "HIDE");
+      resetBushHTML(pokemonB.hideInBushIndex);
+    }, 1000);
 
     return;
   }
 
-  setTimeout(function () {
-    gameState.updatePokemonStateOf(pokemonA.hideInBushIndex, "HIDE");
-    resetBushHTML(pokemonA.hideInBushIndex);
+  gameState.updatePokemonStateOf(pokemonA.hideInBushIndex, "CATCHED");
+  revealPokeballHTML(pokemonA.hideInBushIndex);
 
-    gameState.updatePokemonStateOf(pokemonB.hideInBushIndex, "HIDE");
-    resetBushHTML(pokemonB.hideInBushIndex);
-  }, 1000);
+  gameState.updatePokemonStateOf(pokemonB.hideInBushIndex, "CATCHED");
+  revealPokeballHTML(pokemonB.hideInBushIndex);
+
+  gameState.pokemonCatched.push(pokemonA.pokemonId);
+  updateCatchedPokemonListHTML(gameState.pokemonCatched);
+
+  if (!gameState.areAllPokemonCatched()) return;
+
+  gameState.finishGame();
+  updateCountRecordHTML(gameState.stats.countRecord);
 }
 
 function startGame() {
