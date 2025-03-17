@@ -15,20 +15,13 @@
   animation-duration: 0.7s;
 }
 
-.box .pokemon,
 .box .pokeball {
   position: absolute;
   top: 0;
-  left: 50%;
-  transform: translate(-50%, 0);
+  left: 24px;
   width: auto;
   height: 100%;
-}
-
-.box .pokeball {
   height: 60%;
-  top: 60%;
-  transform: translate(-50%, -50%);
 }
 
 #grille_de_jeu {
