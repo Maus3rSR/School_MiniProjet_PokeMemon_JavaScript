@@ -115,11 +115,14 @@ function handleBushClick(event) {
   const pokemonInBush = gameState.pokemonListInBush[index];
   const pokemonsRevealedCount = gameState.pokemonsRevealedCount();
 
-  if (pokemonInBush.state !== "HIDE" && pokemonsRevealedCount === 2) return;
+  console.log("POKEMON REVEALED COUNT", pokemonsRevealedCount);
+
+  if (pokemonInBush.state !== "HIDE" || pokemonsRevealedCount === 2) return;
 
   hideBushHTML(index);
   revealPokemonHTML(index);
   pokemonInBush.state = "REVEALED";
+  console.log("POKEMON REVEAL", pokemonInBush.pokemonId);
 
   // 0 car au moment où je récupère ce comptage, je n'ai pas changé l'état du pokemon actuel à révélé
   // on a besoin d'un deuxième pokemon
