@@ -25,6 +25,8 @@ const pairOfPokemonIds = ["pikachu", "pikachu", "charmander", "charmander"];
 const gridHTML = document.querySelector("#grille_de_jeu");
 const boxListHTML = gridHTML.querySelectorAll(".box");
 const catchedPokemonHTML = document.querySelector(".liste_pokemons_captures");
+const countHTML = document.querySelector("#stat_nombre_de_coups");
+const countRecordHTML = document.querySelector("#stat_nombre_de_coups_record");
 
 function hideBushHTML(index) {
   boxListHTML[index].querySelector(".bush").style.display = "none";
@@ -66,7 +68,17 @@ function catchPokemonHTML(pokemon) {
   catchedPokemonHTML.appendChild(pokemonHTML);
 }
 
+function updateCountHTML(count) {
+  countHTML.textContent = count;
+}
+
+function updateCountRecordHTML(count) {
+  countRecordHTML.textContent = count;
+}
+
 hideBushHTML(0);
 revealPokemonHTML(0);
 revealPokeballHTML(0);
 catchPokemonHTML(getPokemonData(0));
+updateCountHTML(3);
+updateCountRecordHTML(4);
