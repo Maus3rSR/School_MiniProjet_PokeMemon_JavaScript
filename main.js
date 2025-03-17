@@ -65,6 +65,9 @@ const gameState = {
       }))
       .filter((pokemon) => pokemon.state === "REVEALED");
   },
+  incrementStat() {
+    this.stats.count++;
+  },
 };
 
 function hideBushHTML(index) {
@@ -136,21 +139,20 @@ function revealPokemon(event) {
   const pokemonInBush = gameState.pokemonListInBush[indexOfPokemonHidden];
   const pokemonsRevealedCount = gameState.pokemonsRevealedCount();
 
-  console.log("POKEMON REVEALED COUNT", pokemonsRevealedCount);
-
   if (pokemonInBush.state !== "HIDE" || pokemonsRevealedCount === 2) return;
 
   hideBushHTML(indexOfPokemonHidden);
   revealPokemonHTML(indexOfPokemonHidden);
   gameState.updatePokemonStateOf(indexOfPokemonHidden, "REVEALED");
 
-  console.log("POKEMON REVEAL", pokemonInBush.pokemonId);
-
   // 0 car au moment où je récupère ce comptage, je n'ai pas changé l'état du pokemon actuel à révélé
   // on a besoin d'un deuxième pokemon
   if (pokemonsRevealedCount === 0) return;
 
   const [pokemonA, pokemonB] = gameState.pokemonsRevealed();
+
+  gameState.incrementStat();
+  updateCountHTML(gameState.stats.count);
 
   if (pokemonA.pokemonId === pokemonB.pokemonId) {
     gameState.updatePokemonStateOf(pokemonA.hideInBushIndex, "CATCHED");
