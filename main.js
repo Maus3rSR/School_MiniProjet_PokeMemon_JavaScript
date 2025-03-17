@@ -1,16 +1,3 @@
-const pokemonData = [
-  {
-    name: "charmander",
-    sprite:
-      "https://img.pokemondb.net/sprites/scarlet-violet/normal/charmander.png",
-  },
-  {
-    name: "pikachu",
-    sprite:
-      "https://img.pokemondb.net/sprites/scarlet-violet/normal/pikachu.png",
-  },
-];
-
 const gridHTML = document.querySelector("#grille_de_jeu");
 const boxListHTML = gridHTML.querySelectorAll(".box");
 const catchedPokemonHTML = document.querySelector(".liste_pokemons_captures");
@@ -19,11 +6,24 @@ const countRecordHTML = document.querySelector("#stat_nombre_de_coups_record");
 const replayButtonHTML = document.querySelector("#rejouer");
 
 const gameState = {
+  gridSize: 12,
+  pokemonEntities: [], // La liste de tous les pokemons (ça peut être plus que la taille de la grille)
   pokemonListInBush: [],
   pokemonCatched: [],
   stats: {
     count: 0,
     countRecord: null, // null => Le record n'a pas encore été défini
+  },
+  getPokemonEntity(pokemonId) {
+    return this.pokemonEntities.find((pokemon) => pokemon.name === pokemonId);
+  },
+  getRandomPokemonForGrid() {
+    const pokemonIds = randomize(this.pokemonEntities)
+      .filter((_, index) => index < this.gridSize / 2)
+      .map((pokemon) => pokemon.name);
+
+    console.log(pokemonIds);
+    return [...pokemonIds, ...pokemonIds];
   },
   updatePokemonStateOf(index, state) {
     this.pokemonListInBush[index].state = state;
@@ -55,32 +55,15 @@ const gameState = {
   replay() {
     this.stats.count = 0;
     this.pokemonCatched = [];
-    this.pokemonListInBush = this.pokemonListInBush.map((pokemon) => ({
-      ...pokemon,
-      state: "HIDE",
-    }));
-
-    this.randomize();
+    this.init();
   },
-  randomize() {
-    for (let i = this.pokemonListInBush.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [this.pokemonListInBush[i], this.pokemonListInBush[j]] = [
-        this.pokemonListInBush[j],
-        this.pokemonListInBush[i],
-      ];
-    }
-  },
-  init(pokemonData) {
-    // [...pokemonData, ...pokemonData] permet de prendre la liste et faire un doublon
-    this.pokemonListInBush = [...pokemonData, ...pokemonData].map(
-      (pokemon) => ({
-        pokemonId: pokemon,
+  init() {
+    this.pokemonListInBush = this.getRandomPokemonForGrid().map(
+      (pokemonId) => ({
+        pokemonId,
         state: "HIDE",
       })
     );
-
-    this.randomize();
   },
   loadState(state) {
     this.pokemonListInBush = state.pokemonListInBush.map((pokemon) => ({
@@ -94,6 +77,14 @@ const gameState = {
     this.stats = state.stats;
   },
 };
+
+function randomize(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
 
 function hideBushHTML(index) {
   boxListHTML[index].querySelector(".bush").style.display = "none";
@@ -124,10 +115,6 @@ function getPokemonIdFromIndex(index) {
   return gameState.pokemonListInBush[index]?.pokemonId;
 }
 
-function getPokemonData(pokemon_id) {
-  return pokemonData.find((pokemon) => pokemon.name === pokemon_id);
-}
-
 function createPokemonHtml({ sprite }) {
   const pokemonHTML = document.createElement("img");
   pokemonHTML.src = sprite;
@@ -146,7 +133,7 @@ function createPokeballHtml() {
 
 function revealPokemonHTML(index) {
   const pokemon_id = getPokemonIdFromIndex(index);
-  const pokemonHTML = createPokemonHtml(getPokemonData(pokemon_id));
+  const pokemonHTML = createPokemonHtml(gameState.getPokemonEntity(pokemon_id));
   boxListHTML[index].appendChild(pokemonHTML);
 }
 
@@ -159,7 +146,7 @@ function updateCatchedPokemonListHTML(pokemonIds) {
   catchedPokemonHTML.innerHTML = "";
 
   pokemonIds.forEach((id) => {
-    const pokemonHTML = createPokemonHtml(getPokemonData(id));
+    const pokemonHTML = createPokemonHtml(gameState.getPokemonEntity(id));
     catchedPokemonHTML.appendChild(pokemonHTML);
   });
 }
@@ -236,7 +223,8 @@ function revealPokemon(event) {
 }
 
 function startGame() {
-  gameState.init(pokemonData.map((pokemon) => pokemon.name));
+  gameState.init();
+
   boxListHTML.forEach((box) =>
     box.addEventListener("click", function (event) {
       revealPokemon(event);
@@ -253,6 +241,8 @@ function startGame() {
     updateCatchedPokemonListHTML(gameState.pokemonCatched);
     hideReplayButton();
   });
+
+  loadGame();
 }
 
 function saveGame() {
@@ -272,5 +262,9 @@ function loadGame() {
   updateCatchedPokemonListHTML(gameState.pokemonCatched);
 }
 
-loadGame();
-startGame();
+fetch("data/pokemon.json")
+  .then((response) => response.json())
+  .then((pokemonData) => {
+    gameState.pokemonEntities = pokemonData;
+    startGame();
+  });
