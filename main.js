@@ -31,23 +31,19 @@ const gameState = {
   pokemonListInBox: [
     {
       pokemonId: "pikachu",
-      pokemonRevealed: false,
-      pokemonCatched: false,
+      state: "HIDE", // HIDE, REVEALED, CATCHED
     },
     {
       pokemonId: "pikachu",
-      pokemonRevealed: false,
-      pokemonCatched: false,
+      state: "HIDE",
     },
     {
       pokemonId: "charmander",
-      pokemonRevealed: false,
-      pokemonCatched: false,
+      state: "HIDE",
     },
     {
       pokemonId: "charmander",
-      pokemonRevealed: false,
-      pokemonCatched: false,
+      state: "HIDE",
     },
   ],
   pokemonCatched: [],
@@ -103,6 +99,18 @@ function updateCountHTML(count) {
 
 function updateCountRecordHTML(count) {
   countRecordHTML.textContent = count;
+}
+
+function handleBushClick(event) {
+  const box = event.currentTarget;
+  const index = Array.from(boxListHTML).indexOf(box);
+
+  hideBushHTML(index);
+  revealPokemonHTML(index);
+}
+
+function startGame() {
+  boxListHTML.forEach((box) => box.addEventListener("click", handleBushClick));
 }
 
 startGame();
