@@ -16,10 +16,6 @@ import {
   onBoxClicked,
 } from "./modules/UI/gridUI.js";
 import { updateCatchedPokemonListHTML } from "./modules/UI/catchedUI.js";
-import {
-  retrieveGameState,
-  persistGameState,
-} from "./modules/gameStateStorage.js";
 import { fetchPokemon } from "./modules/pokemonDatasource.js";
 import gameState from "./modules/gameState.js";
 
