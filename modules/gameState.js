@@ -55,6 +55,7 @@ function getRandomPokemonForGrid() {
 
 function updatePokemonStateAt(index, state) {
   gameState.pokemonListInBush[index].state = state;
+  console.log("Mise à jour de l'état de jeu", gameState);
   persistGameState(gameState);
 }
 
@@ -94,7 +95,7 @@ function finishGame() {
 }
 
 function replay() {
-  gameState.count = 0;
+  gameState.stats.count = 0;
   gameState.pokemonCatched = [];
   init();
   persistGameState(gameState);
@@ -114,15 +115,15 @@ function load() {
   const state = retrieveGameState();
   if (!state) return false;
 
+  gameState.pokemonEntities = state.pokemonEntities;
+  gameState.pokemonCatched = state.pokemonCatched;
+  gameState.stats = state.stats;
   gameState.pokemonListInBush = state.pokemonListInBush.map((pokemon) => ({
     ...pokemon,
     // Dans une situation où on a quitté la partie avant que les pokemons révélés non identiques
     // soient cachées, on réinitialise l'état de ces pokemons à HIDE
     state: pokemon.state === "REVEALED" ? "HIDE" : pokemon.state,
   }));
-
-  gameState.pokemonCatched = state.pokemonCatched;
-  gameState.stats = state.stats;
 
   return true;
 }
