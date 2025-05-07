@@ -53,6 +53,17 @@
   flex-direction: column;
 }
 
+.box {
+  min-height: 60px;
+}
+
+.box img.pokeball,
+.box img.bush,
+.box img.pokemon {
+  height: 100px;
+  width: auto;
+}
+
 #sidebar .liste_pokemons_captures img {
   width: 30%;
   height: auto;
